@@ -1,0 +1,174 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,intersections,through,backgrounds}
+\usepackage{xparse}
+
+\begin{document}
+
+% SET VALUES OF n AND m HERE!!
+\newcommand{\n}{7}
+\newcommand{\m}{6}
+
+% Initialize counters for counting the triangles
+\newcounter{countA}
+\setcounter{countA}{0}
+
+\newcounter{countB}
+\setcounter{countB}{0}
+
+\newcounter{countAB}
+\setcounter{countAB}{0}
+
+% Make a command for drawing triangle. This depends on n and m.
+\newcommand{\triangleoutline}{
+    % Draw a frame around the picture so we don't run up on the edges of the pdf document
+    \draw (-2, -2) -- (12, -2) -- (12, 12) -- (-2, 12) -- cycle;
+    
+    % Count will go here later:
+    \node[align = left] at (7, 9) {How many triangles are there?};
+    
+    % A is the top vertex with n + 1 lines coming out of it
+    \coordinate (A) at (0, 10);
+    %\node[label = 90: A] at (A) {};
+    \foreach \z in {1,...,\n}
+     {
+           \coordinate ({\z}c{0}) at (A);
+           %\node[label = 45: {\z}c{0}] at ({\z}c{0}) {};
+           \node[] at ({\z}c{0}) {};
+     }
+
+    % B is the right-side vertex with m + 1 lines coming out of it
+    \coordinate (B) at (10, 0);
+    %\node[label = 0: B] at (B) {};
+    \foreach \z in {1,...,\m}
+     {
+           \coordinate ({0}c{\z}) at (B);
+           %\node[label = 45: {0}c{\z}] at ({0}c{\z}) {};
+           \node[] at ({0}c{\z}) {};
+     }
+    % Draw a line from A to B and name this line A--B
+    \draw [name path = AB] (A) -- (B);
+    \node[label = 45: X] at ($(A)!0.5!(B)$) {};
+    
+    % Draw and name the additional n lines coming out of A
+    \foreach \a in {1, 2, ..., \n}
+    {
+    	\coordinate (a\a) at ({10-(10/\n)*\a}, 0);
+    	%\node[label = -90: a\a] at (a\a) {};
+		\node[label=270: $A_\a$] at (a\a) {};
+    	\draw [name path global/.expanded=A\a] (A) -- (a\a);
+    }
+    
+    % Draw and name the additional m lines coming out of B
+    \foreach \b in {1, 2, ..., \m}
+    {
+    	\coordinate (b\b) at (0, {10-(10/\m)*\b});
+    	%\node[label = 180: b\b] at (b\b) {};
+		\node[label = 180: $B_\b$] at (b\b) {};
+    	\draw [name path global/.expanded=B\b] (B) -- (b\b);
+    }
+    
+}
+
+\newcommand{\nameintersectionpoints}{
+	% Find and name the intersection points. Each of these points C_i corresponds to a triangle ABC_i
+         \foreach \a in {1,...,\n}
+          {
+          	\foreach \b in {1,...,\m}
+                 {                     
+                     	\path [name intersections={of={A\a} and {B\b}, by = {\a}C{\b}}];
+                     	\coordinate ({\a}c{\b}) at ({\a}C{\b});
+                     	%\node[label = 45: {\a}c{\b}] at ({\a}c{\b}) {};
+						\node[] at ({\a}c{\b}) {};                   
+                  }            
+          }
+}
+
+% JUST DRAW THE BIG TRIANGLE, NO COUNTING YET
+\begin{tikzpicture}
+	\triangleoutline
+\end{tikzpicture}
+
+% COUNT TRIANGLES A _ _
+\foreach \i in {1,...,\n}
+{
+	\foreach \a in {\n,...,\i}
+	{
+		\newcommand{\s}{\the\numexpr\a-\i}
+		\ifnum\s>0
+		{
+			\foreach \b in {1,...,\m}
+			{
+				\stepcounter{countA}
+				
+				\begin{tikzpicture}
+				
+					\triangleoutline
+					\node[align = left] at (7, 8.5) {$\triangle$ with AAB:}; \node[align = right] at (8.5, 8.5) {\arabic{countA}};
+					\nameintersectionpoints
+					
+					\filldraw[red, fill opacity = 0.4] (A) -- ({\a}c{\b}) -- ({\s}c{\b}) -- cycle;
+					
+				\end{tikzpicture}
+			}
+		}\else{}\fi
+	}
+}
+
+% COUNT TRIANGLES B _ _
+\foreach \i in {1,...,\m}
+{
+	\foreach \b in {\m,...,\i}
+	{
+		\newcommand{\s}{\the\numexpr\b-\i}
+		\ifnum\s>0
+		{
+			\foreach \a in {1,...,\n}
+			{
+				\stepcounter{countB}
+				
+				\begin{tikzpicture}
+				
+					\triangleoutline
+					\node[align = left] at (7, 8.5) {$\triangle$ with AAB:}; \node[align = right] at (8.5, 8.5) {\arabic{countA}};
+					\node[align = left] at (7, 8) {$\triangle$ with BBA:}; \node[align = right] at (8.5, 8) {\arabic{countB}};
+					\nameintersectionpoints
+					
+					\filldraw[blue, fill opacity = 0.4] (B) -- ({\a}c{\b}) -- ({\a}c{\s}) -- cycle;
+					
+				\end{tikzpicture}
+			}
+		}\else{}\fi
+	}
+}
+
+% COUNT TRIANGLES A B _
+\foreach \a in {\n,...,1}
+{
+	\foreach \b in {1,...,\m}
+	{
+		\stepcounter{countAB}
+		\begin{tikzpicture}
+		
+			\triangleoutline
+			\node[align = left] at (7, 8.5) {$\triangle$ with AAB:}; \node[align = right] at (8.5, 8.5) {\arabic{countA}};
+			\node[align = left] at (7, 8) {$\triangle$ with BBA:}; \node[align = right] at (8.5, 8) {\arabic{countB}};
+			\node[align = left] at (7, 7.5) {$\triangle$ with ABX:}; \node[align = right] at (8.5, 7.5) {\arabic{countAB}};
+			\nameintersectionpoints
+			
+			\filldraw[violet, fill opacity = 0.4] (A) -- (B) -- ({\a}c{\b}) -- cycle;
+			
+		\end{tikzpicture}
+	}
+}
+
+% SO THE TOTAL NUMBER OF TRIANGLES IS
+\begin{tikzpicture}
+
+	\triangleoutline         
+	\node[align = left] at (7, 9) {How many triangles are there?};
+    	\node[align = right] at (7, 8) {$\triangle = \triangle AAB + \triangle BBA + \triangle ABX$ \\ = \arabic{countA} + \arabic{countB} + \arabic{countAB} = \the\numexpr\arabic{countA}+\arabic{countB}+\arabic{countAB}};
+
+\end{tikzpicture}
+
+\end{document}

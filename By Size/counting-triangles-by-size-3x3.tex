@@ -1,0 +1,798 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,intersections,through,backgrounds}
+\usepackage{xparse}
+
+\begin{document}
+
+% Set your values of n and m	
+\newcommand{\n}{3}
+\newcommand{\m}{3}
+
+% Initialize counters for counting the triangles
+\newcounter{count11}
+\setcounter{count11}{0}
+
+\newcounter{count21}
+\setcounter{count21}{0}
+
+\newcounter{count12}
+\setcounter{count12}{0}
+
+\newcounter{count31}
+\setcounter{count31}{0}
+
+\newcounter{count13}
+\setcounter{count13}{0}
+
+\newcounter{count22}
+\setcounter{count22}{0}
+
+\newcounter{count32}
+\setcounter{count32}{0}
+
+\newcounter{count23}
+\setcounter{count23}{0}
+
+\newcounter{count33}
+\setcounter{count33}{0}
+
+
+% Make a command for drawing triangle. This depends on n and m.
+\newcommand{\triangleoutline}{
+    % Draw a frame around the picture so we don't run up on the edges of the pdf document
+    \draw (-2, -2) -- (12, -2) -- (12, 12) -- (-2, 12) -- cycle;
+    
+    % Count will go here later:
+    \node[align = left] at (7, 9) {How many triangles are there?};
+    
+    % A is the top vertex with n + 1 lines coming out of it
+    \coordinate (A) at (0, 10);
+    \node[label = 90: A] at (A) {};
+    \foreach \z in {1, 2, 3}
+     {
+           \coordinate ({\z}c{0}) at (A);
+           %\node[label = 45: {\z}c{0}] at ({\z}c{0}) {};
+           \node[] at ({\z}c{0}) {};
+     }
+
+    % B is the right-side vertex with m + 1 lines coming out of it
+    \coordinate (B) at (10, 0);
+    \node[label = 0: B] at (B) {};
+    \foreach \z in {1, 2, 3}
+     {
+           \coordinate ({0}c{\z}) at (B);
+           %\node[label = 45: {0}c{\z}] at ({0}c{\z}) {};
+           \node[] at ({0}c{\z}) {};
+     }
+    % Draw a line from A to B and name this line A--B
+    \draw [name path = AB] (A) -- (B);
+    
+    % Draw and name the additional n lines coming out of A
+    \foreach \a in {1, 2, ..., \n}
+    {
+    	\coordinate (a\a) at ({10-(10/\n)*\a}, 0);
+    	%\node[label = -90: a\a] at (a\a) {};
+	\node[] at (a\a) {};
+    	\draw [name path global/.expanded=A\a] (A) -- (a\a);
+    }
+    
+    % Draw and name the additional m lines coming out of B
+    \foreach \b in {1, 2, ..., \m}
+    {
+    	\coordinate (b\b) at (0, {10-(10/\m)*\b});
+    	%\node[label = 180: b\b] at (b\b) {};
+	\node[] at (b\b) {};
+    	\draw [name path global/.expanded=B\b] (B) -- (b\b);
+    }
+    
+}
+
+\newcommand{\nameintersectionpoints}{
+	% Find and name the intersection points. Each of these points C_i corresponds to a triangle ABC_i
+         \foreach \a in {1,...,\n}
+          {
+          	\foreach \b in {1,...,\m}
+                 {                     
+                     	\path [name intersections={of={A\a} and {B\b}, by = {\a}C{\b}}];
+                     	\coordinate ({\a}c{\b}) at ({\a}C{\b});
+                     	%\node[label = 45: {\a}c{\b}] at ({\a}c{\b}) {};
+			\node[] at ({\a}c{\b}) {};                   
+                  }            
+          }
+}
+
+% JUST DRAW THE BIG TRIANGLE, NO COUNTING YET
+\begin{tikzpicture}
+	\triangleoutline
+	\nameintersectionpoints
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 1,1 (there are 5)
+
+% 1
+\stepcounter{count11}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[red, fill opacity = 1] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count11}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 1] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+\end{tikzpicture}
+
+% 3
+\stepcounter{count11}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 1] (A) -- ({1}c{1}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% 4
+\stepcounter{count11}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 1] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+\end{tikzpicture}
+
+% 5
+\stepcounter{count11}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 1] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+\end{tikzpicture}
+	
+% COUNT TRIANGLES OF SIZE 2,1 (there are 4)
+
+% 1
+\stepcounter{count21}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 1] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count21}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 1] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+\end{tikzpicture}
+
+% 3
+\stepcounter{count21}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 1] (A) -- ({1}c{2}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% 4
+\stepcounter{count21}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 1] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 1,2 (there are 4)
+
+% 1
+\stepcounter{count12}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 1] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count12}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 1] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+\end{tikzpicture}
+
+% 3
+\stepcounter{count12}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 1] (B) -- ({2}c{1}) -- (A) -- cycle;
+\end{tikzpicture}
+
+% 4
+\stepcounter{count12}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 1] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 3,1 (there are 3)
+
+% 1
+\stepcounter{count31}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[yellow, fill opacity = 1] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count31}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 1] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+\end{tikzpicture}
+
+% 3
+\stepcounter{count31}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 1] (A) -- ({1}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 1,3 (there are 3)
+
+% 1
+\stepcounter{count13}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[yellow, fill opacity = 1] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count13}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 1] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+\end{tikzpicture}
+
+% 3
+\stepcounter{count13}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+	\filldraw[yellow, fill opacity = 1] (B) -- ({3}c{1}) -- (A) -- cycle;
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 2,2 (there are 3)
+
+% 1
+\stepcounter{count22}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[green, fill opacity = 1] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count22}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[green, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[green, fill opacity = 1] (A) -- ({2}c{2}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% 3
+\stepcounter{count22}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[green, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[green, fill opacity = 0.2] (A) -- ({2}c{2}) -- (B) -- cycle;
+	\filldraw[green, fill opacity = 1] ({2}c{1}) -- ({2}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+
+% COUNT TRIANGLES OF SIZE 3,2 (there are 2)
+
+% 1
+\stepcounter{count32}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\node[align = left, color = blue] at (7, 5.5) {3 by 2 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5.5) {\arabic{count32}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[blue, fill opacity = 1] (A) -- ({3}c{3}) -- ({1}c{3}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count32}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\node[align = left, color = blue] at (7, 5.5) {3 by 2 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5.5) {\arabic{count32}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[blue, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[blue, fill opacity = 1] (A) -- ({2}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 2,3 (there are 2)
+
+% 1
+\stepcounter{count23}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\node[align = left, color = blue] at (7, 5.5) {3 by 2 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5.5) {\arabic{count32}};
+	\node[align = left, color = blue] at (7, 5) {2 by 3 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5) {\arabic{count23}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[blue, fill opacity = 1] (B) -- ({3}c{3}) -- ({3}c{1}) -- cycle;
+\end{tikzpicture}
+
+% 2
+\stepcounter{count23}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\node[align = left, color = blue] at (7, 5.5) {3 by 2 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5.5) {\arabic{count32}};
+	\node[align = left, color = blue] at (7, 5) {2 by 3 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5) {\arabic{count23}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[blue, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{1}) -- cycle;
+	\filldraw[blue, fill opacity = 1] (B) -- ({3}c{2}) -- (A) -- cycle;
+\end{tikzpicture}
+
+% COUNT TRIANGLES OF SIZE 3,3 (there is 1)
+
+% 1
+\stepcounter{count33}
+\begin{tikzpicture}
+	\node[align = left, color = red] at (7, 8.5) {1 by 1 $\triangle$:}; \node[align = right, color = red] at (8.5, 8.5) {\arabic{count11}};
+	\node[align = left, color = orange] at (7, 8) {2 by 1 $\triangle$:}; \node[align = right, color = orange] at (8.5, 8) {\arabic{count21}};
+	\node[align = left, color = orange] at (7, 7.5) {1 by 2 $\triangle$:}; \node[align = right, color = orange] at (8.5, 7.5) {\arabic{count12}};
+	\node[align = left] at (7, 7) {3 by 1 $\triangle$:}; \node[align = right] at (8.5, 7) {\arabic{count31}};
+	\node[align = left] at (7, 6.5) {1 by 3 $\triangle$:}; \node[align = right] at (8.5, 6.5) {\arabic{count13}};
+	\node[align = left, color = green!50!black] at (7, 6) {2 by 2 $\triangle$:}; \node[align = right, color = green!50!black] at (8.5, 6) {\arabic{count22}};
+	\node[align = left, color = blue] at (7, 5.5) {3 by 2 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5.5) {\arabic{count32}};
+	\node[align = left, color = blue] at (7, 5) {2 by 3 $\triangle$:}; \node[align = right, color = blue] at (8.5, 5) {\arabic{count23}};
+	\node[align = left, color = violet] at (7, 4.5) {3 by 3 $\triangle$:}; \node[align = right, color = violet] at (8.5, 4.5) {\arabic{count33}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[violet, fill opacity = 1] (A) -- ({3}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+% TOTAL NUMBER OF TRIANGLES
+
+% 1,1
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}};
+	\triangleoutline
+	\nameintersectionpoints
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+\end{tikzpicture}
+
+% 2,1
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+%1,2
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+\end{tikzpicture}
+
+%3,1
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}}; \node[align = left] at (7.5, 8) {+};
+	\node[align = left] at (8, 8) {\arabic{count31}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({1}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+%1,3
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}}; \node[align = left] at (7.5, 8) {+};
+	\node[align = left] at (8, 8) {\arabic{count31}}; \node[align = left] at (8.5, 8) {+};
+	\node[align = left] at (9, 8) {\arabic{count13}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{1}) -- (A) -- cycle;
+\end{tikzpicture}
+
+%2,2
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}}; \node[align = left] at (7.5, 8) {+};
+	\node[align = left] at (8, 8) {\arabic{count31}}; \node[align = left] at (8.5, 8) {+};
+	\node[align = left] at (9, 8) {\arabic{count13}}; \node[align = left] at (5.5, 7.5) {+};
+	\node[align = left, color = green!50!black] at (6, 7.5) {\arabic{count22}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{1}) -- (A) -- cycle;
+	
+	\filldraw[green, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[green, fill opacity = 0.2] (A) -- ({2}c{2}) -- (B) -- cycle;
+	\filldraw[green, fill opacity = 0.2] ({2}c{1}) -- ({2}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+%3,2
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}}; \node[align = left] at (7.5, 8) {+};
+	\node[align = left] at (8, 8) {\arabic{count31}}; \node[align = left] at (8.5, 8) {+};
+	\node[align = left] at (9, 8) {\arabic{count13}}; \node[align = left] at (5.5, 7.5) {+};
+	\node[align = left, color = green!50!black] at (6, 7.5) {\arabic{count22}}; \node[align = left] at (6.5, 7.5) {+};
+	\node[align = left, color = blue] at (7, 7.5) {\arabic{count32}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{1}) -- (A) -- cycle;
+	
+	\filldraw[green, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[green, fill opacity = 0.2] (A) -- ({2}c{2}) -- (B) -- cycle;
+	\filldraw[green, fill opacity = 0.2] ({2}c{1}) -- ({2}c{3}) -- (B) -- cycle;
+	
+	\filldraw[blue, fill opacity = 0.1] (A) -- ({3}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[blue, fill opacity = 0.1] (A) -- ({2}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+%2,3
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}}; \node[align = left] at (7.5, 8) {+};
+	\node[align = left] at (8, 8) {\arabic{count31}}; \node[align = left] at (8.5, 8) {+};
+	\node[align = left] at (9, 8) {\arabic{count13}}; \node[align = left] at (5.5, 7.5) {+};
+	\node[align = left, color = green!50!black] at (6, 7.5) {\arabic{count22}}; \node[align = left] at (6.5, 7.5) {+};
+	\node[align = left, color = blue] at (7, 7.5) {\arabic{count32}}; \node[align = left] at (7.5, 7.5) {+};
+	\node[align = left, color = blue] at (8, 7.5) {\arabic{count23}};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{1}) -- (A) -- cycle;
+	
+	\filldraw[green, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[green, fill opacity = 0.2] (A) -- ({2}c{2}) -- (B) -- cycle;
+	\filldraw[green, fill opacity = 0.2] ({2}c{1}) -- ({2}c{3}) -- (B) -- cycle;
+	
+	\filldraw[blue, fill opacity = 0.1] (A) -- ({3}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[blue, fill opacity = 0.1] (A) -- ({2}c{3}) -- (B) -- cycle;
+	
+	\filldraw[blue, fill opacity = 0.1] (B) -- ({3}c{3}) -- ({3}c{1}) -- cycle;
+	\filldraw[blue, fill opacity = 0.1] (B) -- ({3}c{2}) -- (A) -- cycle;
+\end{tikzpicture}
+
+%3,3
+\begin{tikzpicture}
+	\node[align = left, color = red] at (5, 8) {\arabic{count11}}; \node[align = left] at (5.5, 8) {+};
+	\node[align = left, color = orange] at (6, 8) {\arabic{count21}}; \node[align = left] at (6.5, 8) {+};
+	\node[align = left, color = orange] at (7, 8) {\arabic{count12}}; \node[align = left] at (7.5, 8) {+};
+	\node[align = left] at (8, 8) {\arabic{count31}}; \node[align = left] at (8.5, 8) {+};
+	\node[align = left] at (9, 8) {\arabic{count13}}; \node[align = left] at (5.5, 7.5) {+};
+	\node[align = left, color = green!50!black] at (6, 7.5) {\arabic{count22}}; \node[align = left] at (6.5, 7.5) {+};
+	\node[align = left, color = blue] at (7, 7.5) {\arabic{count32}}; \node[align = left] at (7.5, 7.5) {+};
+	\node[align = left, color = blue] at (8, 7.5) {\arabic{count23}}; \node[align = left] at (8.5, 7.5) {+};
+	\node[align = left, color = violet] at (9, 7.5) {\arabic{count33}};
+	\node[align = left] at (6.5, 6.5) {=}; \node[align = left] at (7, 6.5) {27};
+	\triangleoutline
+	\nameintersectionpoints
+	
+	\filldraw[red, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({2}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({2}c{1}) -- ({1}c{1}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (A) -- ({1}c{1}) -- (B) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{1}) -- ({1}c{2}) -- cycle;
+	\filldraw[red, fill opacity = 0.2] (B) -- ({1}c{2}) -- ({1}c{3}) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({2}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({1}c{2}) -- (B) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] ({1}c{1}) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{3}) -- ({2}c{2}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{2}) -- ({2}c{1}) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (B) -- ({2}c{1}) -- (A) -- cycle;
+	\filldraw[orange, fill opacity = 0.2] (A) -- ({3}c{1}) -- ({1}c{1}) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({3}c{3}) -- ({2}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({2}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (A) -- ({1}c{3}) -- (B) -- cycle;
+	
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{3}) -- ({3}c{2}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{2}) -- ({3}c{1}) -- cycle;
+	\filldraw[yellow, fill opacity = 0.2] (B) -- ({3}c{1}) -- (A) -- cycle;
+	
+	\filldraw[green, fill opacity = 0.2] (A) -- ({3}c{2}) -- ({1}c{2}) -- cycle;
+	\filldraw[green, fill opacity = 0.2] (A) -- ({2}c{2}) -- (B) -- cycle;
+	\filldraw[green, fill opacity = 0.2] ({2}c{1}) -- ({2}c{3}) -- (B) -- cycle;
+	
+	\filldraw[blue, fill opacity = 0.1] (A) -- ({3}c{3}) -- ({1}c{3}) -- cycle;
+	\filldraw[blue, fill opacity = 0.1] (A) -- ({2}c{3}) -- (B) -- cycle;
+	
+	\filldraw[blue, fill opacity = 0.1] (B) -- ({3}c{3}) -- ({3}c{1}) -- cycle;
+	\filldraw[blue, fill opacity = 0.1] (B) -- ({3}c{2}) -- (A) -- cycle;
+	
+	\filldraw[violet, fill opacity = 0.2] (A) -- ({3}c{3}) -- (B) -- cycle;
+\end{tikzpicture}
+
+
+
+
+\end{document}
